@@ -18,6 +18,10 @@ public class ProgressiveFitFileEncoder {
         self.fileType = fileType
     }
     
+    public func fileHeader(dataSize: UInt32 = 0) -> Data {
+        FileHeader(dataSize: dataSize).encodedData
+    }
+    
     public func encode(messages: [FitMessage]) -> Result<Data, FitEncodingError> {
         guard messages.count > 0 else {
             return .failure(FitEncodingError.noMessages)
