@@ -56,7 +56,18 @@ public struct FitFileEncoder {
 }
 
 public extension FitFileEncoder {
-        
+    
+    internal func encodeDefHeader(index: UInt8, definition: DefinitionMessage) -> Data {
+        var msgData = Data()
+
+        let defHeader = RecordHeader(localMessageType: index, isDataMessage: false)
+        msgData.append(defHeader.normalHeader)
+        msgData.append(definition.encode())
+
+        return msgData
+    }
+
+    
     /// Encode FITFile
     ///
     /// - Parameters:
@@ -64,16 +75,6 @@ public extension FitFileEncoder {
     ///   - messages: Array of other FitMessages
     /// - Returns: Data Result
     func encode(fildIdMessage: FileIdMessage, messages: [FitMessage]) -> Result<Data, FitEncodingError> {
-
-        func encodeDefHeader(index: UInt8, definition: DefinitionMessage) -> Data {
-            var msgData = Data()
-
-            let defHeader = RecordHeader(localMessageType: index, isDataMessage: false)
-            msgData.append(defHeader.normalHeader)
-            msgData.append(definition.encode())
-
-            return msgData
-        }
 
         guard messages.count > 0 else {
             return.failure(FitEncodingError.noMessages)
@@ -150,5 +151,5 @@ public extension FitFileEncoder {
 
         return.success(fileData)
     }
-
+    
 }
